@@ -84,12 +84,13 @@ public class Context {
         String embedText = properties.getProperty("message.embed_text");
         String welcome = properties.getProperty("message.welcome");
         String badName = properties.getProperty("message.bad_name");
+        String longName = properties.getProperty("message.long_name");
 
-        if (embedHexColor == null || embedText == null || welcome == null || badName == null) {
+        if (embedHexColor == null || embedText == null || welcome == null || badName == null || longName == null) {
             throw new PropertyNotFoundException("One or more Message Properties not found");
         }
 
-        return new Messages(embedHexColor, embedText, welcome, badName);
+        return new Messages(embedHexColor, embedText, welcome, badName, longName);
     }
 
     private ChannelIds initializeChannelIds(Properties properties) {
@@ -156,6 +157,7 @@ public class Context {
         private final String embedText;
         private final String welcome;
         private final String badName;
+        private final String longName;
     }
 
     @Getter

@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
+import java.util.List;
 
 public class MessageListener extends ExtendedListenerAdapter {
 
@@ -58,18 +59,24 @@ public class MessageListener extends ExtendedListenerAdapter {
 
     private void actOnNewMemberMessage(MessageReceivedEvent event) {
         Guild guild = event.getGuild();
-        Member author = event.getMember();
-        String content = event.getMessage().getContentStripped();
-        if (Utils.hasOnlyLetters(content)) {
-            Role newMemberRole = guild.getRoleById(context.getRoleIds().getNewMember());
-            Role internalRole = guild.getRoleById(context.getRoleIds().getInternalMember());
+        Member author = event.getMessage().getMember();
 
-            guild.modifyNickname(author, content).queue();
-            guild.addRoleToMember(author, internalRole).queue();
-            guild.removeRoleFromMember(author, newMemberRole).queue();
-        } else {
-            guild.getTextChannelById(context.getRoleIds().getNewMember())
-                    .sendMessage(String.format(context.getMessages().getBadName(), author.getAsMention())).queue();
+        Role newMemberRole = guild.getRoleById(context.getRoleIds().getNewMember());
+        List<Member> membersWithNewRole = guild.getMembersWithRoles(newMemberRole);
+        if (membersWithNewRole.contains(author)) {
+            TextChannel channel = guild.getTextChannelById(context.getChannelIds().getNewMembers());
+            String content = event.getMessage().getContentStripped();
+            if (content.length() > 32) {
+                channel.sendMessage(String.format(context.getMessages().getLongName(), author.getAsMention())).queue();
+            } else if (!Utils.hasOnlyLetters(content)) {
+                channel.sendMessage(String.format(context.getMessages().getBadName(), author.getAsMention())).queue();
+            } else {
+                Role internalRole = guild.getRoleById(context.getRoleIds().getInternalMember());
+
+                guild.modifyNickname(author, content).queue();
+                guild.addRoleToMember(author, internalRole).queue();
+                guild.removeRoleFromMember(author, newMemberRole).queue();
+            }
         }
     }
 }

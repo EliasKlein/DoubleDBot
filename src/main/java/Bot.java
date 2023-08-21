@@ -5,6 +5,8 @@ import listener.NewMemberListener;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +30,8 @@ public class Bot {
             in.close();
 
             builder.setStatus(OnlineStatus.ONLINE);
+            builder.setChunkingFilter(ChunkingFilter.ALL);
+            builder.setMemberCachePolicy(MemberCachePolicy.ALL);
             builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
             builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
             builder.addEventListeners(new MessageListener(context));
