@@ -5,17 +5,46 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.klein</groupId>
-    <artifactId>DiscordBot</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>DoubleDBot</artifactId>
+    <version>1.0</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.assempbly.version>3.6.0</maven.assempbly.version>
         <jda.version>5.0.0-beta.13</jda.version>
         <lombok.version>1.18.28</lombok.version>
         <jasypt.version>1.9.3</jasypt.version>
     </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven.assempbly.version}</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>Bot</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
