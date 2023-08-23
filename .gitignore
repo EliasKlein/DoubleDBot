@@ -33,3 +33,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Encryptor Output ###
+/src/main/resources/output.properties

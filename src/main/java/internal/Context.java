@@ -6,15 +6,14 @@ import lombok.Getter;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.emoji.UnicodeEmoji;
 import org.jasypt.encryption.StringEncryptor;
-import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
-import org.jasypt.encryption.pbe.config.SimplePBEConfig;
-import org.jasypt.salt.StringFixedSaltGenerator;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import static encryption_utils.Encryptor.getStringEncryptor;
 
 public class Context {
 
@@ -34,19 +33,12 @@ public class Context {
     private final List<GamingRole> gamingRoles;
 
     public Context(int encryptorPoolSize, String encryptorPassword, String encryptorSalt) throws IOException {
-        SimplePBEConfig config = new SimplePBEConfig();
-        config.setPoolSize(encryptorPoolSize);
-        config.setPassword(encryptorPassword);
-        config.setSaltGenerator(new StringFixedSaltGenerator(encryptorSalt));
-
-        PooledPBEStringEncryptor stringEncryptor = new PooledPBEStringEncryptor();
-        stringEncryptor.setConfig(config);
-        stringEncryptor.initialize();
-        encryptor = stringEncryptor;
+        encryptor = getStringEncryptor(encryptorPoolSize, encryptorPassword, encryptorSalt);
 
         InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("context.properties");
         Properties properties = new Properties();
         properties.load(in);
+        in.close();
 
         botId = initializeBotId(properties);
         commands = initializeCommands(properties);
@@ -54,8 +46,6 @@ public class Context {
         channelIds = initializeChannelIds(properties);
         roleIds = initializeMemberRoleIds(properties);
         gamingRoles = initializeGamingRoles(properties);
-
-        in.close();
     }
 
     private String decrypt(String value) {

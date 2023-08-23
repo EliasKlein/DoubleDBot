@@ -19,6 +19,7 @@ public class Bot {
             InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties");
             Properties properties = new Properties();
             properties.load(in);
+            in.close();
 
             Context context = new Context(
                     Integer.parseInt(properties.getProperty("encryptor.pool_size")),
@@ -26,9 +27,6 @@ public class Bot {
                     System.getenv(properties.getProperty("env.encryption_salt_name")));
 
             JDABuilder builder = JDABuilder.createDefault(System.getenv(properties.getProperty("env.token_name")));
-
-            in.close();
-
             builder.setStatus(OnlineStatus.ONLINE);
             builder.setChunkingFilter(ChunkingFilter.ALL);
             builder.setMemberCachePolicy(MemberCachePolicy.ALL);
