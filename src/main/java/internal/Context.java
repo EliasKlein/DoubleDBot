@@ -58,6 +58,13 @@ public class Context {
         in.close();
     }
 
+    private String decrypt(String value) {
+        if (value.startsWith("DEC-")) {
+            return encryptor.decrypt(value.split("-", 2)[1]);
+        }
+        return value;
+    }
+
     private String initializeBotId(Properties properties) {
         String botId = properties.getProperty("bot_id");
 
@@ -65,7 +72,7 @@ public class Context {
             throw new PropertyNotFoundException("Property bot_id not found");
         }
 
-        return encryptor.decrypt(botId);
+        return decrypt(botId);
     }
 
     private Commands initializeCommands(Properties properties) {
@@ -76,7 +83,7 @@ public class Context {
             throw new PropertyNotFoundException("One or more Command Properties not found");
         }
 
-        return new Commands(indicator, reactionRole);
+        return new Commands(decrypt(indicator), decrypt(reactionRole));
     }
 
     private Messages initializeMessages(Properties properties) {
@@ -90,7 +97,8 @@ public class Context {
             throw new PropertyNotFoundException("One or more Message Properties not found");
         }
 
-        return new Messages(embedHexColor, embedText, welcome, badName, longName);
+        return new Messages(decrypt(embedHexColor), decrypt(embedText), decrypt(welcome), decrypt(badName),
+                decrypt(longName));
     }
 
     private ChannelIds initializeChannelIds(Properties properties) {
@@ -101,7 +109,7 @@ public class Context {
             throw new PropertyNotFoundException("One or more Channel ID Properties not found");
         }
 
-        return new ChannelIds(encryptor.decrypt(channelNew), encryptor.decrypt(channelRoles));
+        return new ChannelIds(decrypt(channelNew), decrypt(channelRoles));
     }
 
     private MemberRoleIds initializeMemberRoleIds(Properties properties) {
@@ -112,7 +120,7 @@ public class Context {
             throw new PropertyNotFoundException("One or more Role ID Properties not found");
         }
 
-        return new MemberRoleIds(encryptor.decrypt(roleNew), encryptor.decrypt(roleInternal));
+        return new MemberRoleIds(decrypt(roleNew), decrypt(roleInternal));
     }
 
     private List<GamingRole> initializeGamingRoles(Properties properties) {
@@ -128,7 +136,7 @@ public class Context {
                 break;
             }
 
-            list.add(new GamingRole(encryptor.decrypt(id), name, Emoji.fromUnicode(unicode)));
+            list.add(new GamingRole(decrypt(id), decrypt(name), Emoji.fromUnicode(decrypt(unicode))));
             i++;
         }
 
