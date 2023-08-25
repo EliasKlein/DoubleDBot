@@ -119,7 +119,7 @@ public class MessageListener extends ExtendedListenerAdapter {
             } else {
                 Role internalRole = guild.getRoleById(context.getRoleIds().getInternalMember());
 
-                guild.modifyNickname(author, content).queue();
+                guild.modifyNickname(author, content).complete();
                 guild.addRoleToMember(author, internalRole).queue();
                 guild.removeRoleFromMember(author, newMemberRole).queue();
             }
