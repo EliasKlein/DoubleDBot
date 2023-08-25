@@ -42,7 +42,7 @@ public class CommandListener extends ExtendedListenerAdapter {
                 sendCheerMeUp(event, cheerMeUps.get(rand.nextInt(cheerMeUps.size())));
                 return;
             }
-            event.reply(String.format("Hang in there, %s. Oh, kick your admins butt to add some funny cheer me ups!",
+            event.reply(String.format("Hang in there, %s. Oh and kick your admins butt to add some funny cheer me ups!",
                     event.getUser().getAsMention())).queue();
         }
     }
