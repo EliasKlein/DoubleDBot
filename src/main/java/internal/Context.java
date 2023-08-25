@@ -68,12 +68,13 @@ public class Context {
     private Commands initializeCommands(Properties properties) {
         String indicator = properties.getProperty("command.indicator");
         String reactionRole = properties.getProperty("command.reaction_roles");
+        String updateReactionRole = properties.getProperty("command.update_reaction_roles");
 
-        if (indicator == null || reactionRole == null) {
+        if (indicator == null || reactionRole == null || updateReactionRole == null) {
             throw new PropertyNotFoundException("One or more Command Properties not found");
         }
 
-        return new Commands(decrypt(indicator), decrypt(reactionRole));
+        return new Commands(decrypt(indicator), decrypt(reactionRole), decrypt(updateReactionRole));
     }
 
     private Messages initializeMessages(Properties properties) {
@@ -141,10 +142,12 @@ public class Context {
     public class Commands {
         private final String indicator;
         private final String reactionRoles;
+        private final String updateReactionRoles;
 
-        public Commands(String indicator, String reactionRoles) {
+        public Commands(String indicator, String reactionRoles, String updateReactionRoles) {
             this.indicator = indicator;
             this.reactionRoles = this.indicator + reactionRoles;
+            this.updateReactionRoles = this.indicator + updateReactionRoles;
         }
     }
 
