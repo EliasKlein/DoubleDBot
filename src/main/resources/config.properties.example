@@ -1,0 +1,5 @@
+env.token_name=BOT_TOKEN
+env.encryption_pw_name=JASYPT_ENCRYPTOR_PASSWORD
+env.encryption_salt_name=JASYPT_ENCRYPTOR_SALT
+
+encryptor.pool_size=1
