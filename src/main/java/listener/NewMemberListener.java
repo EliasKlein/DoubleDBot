@@ -24,6 +24,6 @@ public class NewMemberListener extends ExtendedListenerAdapter {
 
         TextChannel newMemberChannel = guild.getTextChannelById(context.getChannelIds().getNewMembers());
         newMemberChannel.sendMessage(String.format(context.getMessages().getWelcome(),
-                event.getMember().getAsMention())).queueAfter(3L, TimeUnit.SECONDS);
+                event.getMember().getAsMention())).queueAfter(5L, TimeUnit.SECONDS);
     }
 }
