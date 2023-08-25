@@ -1,5 +1,6 @@
 package encryption_utils;
 
+import internal.Constants;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimplePBEConfig;
@@ -7,28 +8,23 @@ import org.jasypt.salt.StringFixedSaltGenerator;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
+
+import static internal.Utils.loadProperties;
 
 public class Encryptor {
 
     public static void main(String[] args) {
         try {
-            InputStream configIn = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties");
-            Properties congigProperties = new Properties();
-            congigProperties.load(configIn);
-            configIn.close();
+            Properties congigProperties = loadProperties(Constants.CONFIG_PROPERTIES);
 
             StringEncryptor encryptor = getStringEncryptor(
                     Integer.parseInt(congigProperties.getProperty("encryptor.pool_size")),
                     System.getenv(congigProperties.getProperty("env.encryption_pw_name")),
                     System.getenv(congigProperties.getProperty("env.encryption_salt_name")));
 
-            InputStream contextIn = Thread.currentThread().getContextClassLoader().getResourceAsStream("context.properties");
-            Properties contextProperties = new Properties();
-            contextProperties.load(contextIn);
-            contextIn.close();
+            Properties contextProperties = loadProperties(Constants.CONTEXT_PROPERTIES);
 
             Properties outProperties = new Properties();
             for (Map.Entry<Object, Object> entry : contextProperties.entrySet()) {

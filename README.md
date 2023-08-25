@@ -15,6 +15,7 @@ I really don't see the reason why you would want to do so or what is so special 
 - "Relatively" configurable via property files (within the boundaries planned for the server)
 - (optional) Encryption for all properties
   - This is probably very unnecessary but this is a DRACOON Bot.
+- Cheer me up command for the dark days
 
 ## Good to know stuff
 

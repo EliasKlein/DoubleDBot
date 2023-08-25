@@ -1,3 +1,4 @@
+### Generic Section ###
 command.indicator=-
 command.reaction_roles=reactionroles
 command.update_reaction_roles=updateroles
@@ -16,6 +17,8 @@ channel_id.roles=CHANNEL_ID_FOR_REACTION_ROLE_EMBED
 role_id.new=ROLE_ID_FOR_NEW_MEMBERS
 role_id.internal=ROLE_ID_FOR_NORMAL_MEMBERS
 
+
+### Game Section ###
 game.id.0=ROLE_ID_ASSOCIATED_WITH_A_GAME
 game.name.0=A_GAME
 game.emoji_code.0=U+26AA
@@ -25,3 +28,18 @@ game.id.1=ROLE_ID_ASSOCIATED_WITH_ANOTHER_GAME
 game.name.1=ANOTHER_GAME
 game.emoji_code.1=U+26AB
 #:black_circle:
+
+
+### Cheer Me Up Section ###
+cheer_me_up.ultra_rare.type=MESSAGE
+cheer_me_up.ultra_rare.content=CONTENT_FOR_ULTRA_RARE_CHEER_ME_UP
+cheer_me_up.ultra_rare.extra=IGNORED_FOR_MESSAGE
+
+cheer_me_up.generic.type.1=LINK
+cheer_me_up.generic.content.1=LINK_TO_A_VIDEO
+cheer_me_up.generic.extra.1=OPTIONAL_TITLE
+
+cheer_me_up.special.trigger.0=NICKNAME_TO_TRIGGER_THIS_CHEER_ME_UP
+cheer_me_up.special.type.0=FILE
+cheer_me_up.special.content.0=FILENAME_OF_FILE_IN_FILES_FOLDER
+cheer_me_up.special.extra.0=OPTIONAL_TITLE

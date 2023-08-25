@@ -8,12 +8,10 @@ import net.dv8tion.jda.api.entities.emoji.UnicodeEmoji;
 import org.jasypt.encryption.StringEncryptor;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 import static encryption_utils.Encryptor.getStringEncryptor;
+import static internal.Utils.loadProperties;
 
 public class Context {
 
@@ -31,14 +29,17 @@ public class Context {
     private final MemberRoleIds roleIds;
     @Getter
     private final List<GamingRole> gamingRoles;
+    @Getter
+    private final List<CheerMeUp> genericCheerMeUps;
+    @Getter
+    private final Map<String, CheerMeUp> specialCheerMeUps;
+    @Getter
+    private final CheerMeUp ultraRareCheerMeUp;
 
     public Context(int encryptorPoolSize, String encryptorPassword, String encryptorSalt) throws IOException {
         encryptor = getStringEncryptor(encryptorPoolSize, encryptorPassword, encryptorSalt);
 
-        InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("context.properties");
-        Properties properties = new Properties();
-        properties.load(in);
-        in.close();
+        Properties properties = loadProperties(Constants.CONTEXT_PROPERTIES);
 
         botId = initializeBotId(properties);
         commands = initializeCommands(properties);
@@ -46,6 +47,21 @@ public class Context {
         channelIds = initializeChannelIds(properties);
         roleIds = initializeMemberRoleIds(properties);
         gamingRoles = initializeGamingRoles(properties);
+        genericCheerMeUps = initializeGenericCheerMeUps(properties);
+        specialCheerMeUps = initializeSpecialCheerMeUps(properties);
+        ultraRareCheerMeUp = initializeUltraRareCheerMeUps(properties);
+    }
+
+    public boolean hasGenericCheerMeUps() {
+        return genericCheerMeUps != null;
+    }
+
+    public boolean hasSpecialCheerMeUps() {
+        return specialCheerMeUps != null;
+    }
+
+    public boolean hasUltraRareCheerMeUp() {
+        return ultraRareCheerMeUp != null;
     }
 
     private String decrypt(String value) {
@@ -138,6 +154,73 @@ public class Context {
         return list;
     }
 
+    private List<CheerMeUp> initializeGenericCheerMeUps(Properties properties) {
+        List<CheerMeUp> list = new ArrayList<>();
+
+        int i = 0;
+        while (true) {
+            String type = properties.getProperty("cheer_me_up.generic.type." + i);
+            String content = properties.getProperty("cheer_me_up.generic.content." + i);
+            String extra = properties.getProperty("cheer_me_up.generic.extra." + i);
+
+            if (type == null || content == null) {
+                break;
+            }
+
+            list.add(new CheerMeUp(
+                    Constants.CHEER_ME_UP_TYPE.valueOf(type.toUpperCase()),
+                    content,
+                    extra == null ? "" : extra));
+
+            i++;
+        }
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list;
+    }
+
+    private Map<String, CheerMeUp> initializeSpecialCheerMeUps(Properties properties) {
+        Map<String, CheerMeUp> map = new HashMap<>();
+
+        int i = 0;
+        while (true) {
+            String trigger = properties.getProperty("cheer_me_up.special.trigger." + i);
+            String type = properties.getProperty("cheer_me_up.special.type." + i);
+            String content = properties.getProperty("cheer_me_up.special.content." + i);
+            String extra = properties.getProperty("cheer_me_up.special.extra." + i);
+
+            if (trigger == null || type == null || content == null) {
+                break;
+            }
+
+            map.put(trigger, new CheerMeUp(
+                    Constants.CHEER_ME_UP_TYPE.valueOf(type.toUpperCase()),
+                    content,
+                    extra == null ? "" : extra));
+
+            i++;
+        }
+        if (map.isEmpty()) {
+            return null;
+        }
+        return map;
+    }
+
+    private CheerMeUp initializeUltraRareCheerMeUps(Properties properties) {
+        String type = properties.getProperty("cheer_me_up.ultra_rare.type");
+        String content = properties.getProperty("cheer_me_up.ultra_rare.content");
+        String extra = properties.getProperty("cheer_me_up.ultra_rare.extra");
+
+        if (type == null || content == null) {
+            return null;
+        }
+        return new CheerMeUp(
+                Constants.CHEER_ME_UP_TYPE.valueOf(type.toUpperCase()),
+                content,
+                extra == null ? "" : extra);
+    }
+
     @Getter
     public class Commands {
         private final String indicator;
@@ -185,5 +268,13 @@ public class Context {
         public String formattedOutput() {
             return emoji.getFormatted() + " for '" + name + "'\n";
         }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public class CheerMeUp {
+        private final Constants.CHEER_ME_UP_TYPE type;
+        private final String content;
+        private final String extraMessage;
     }
 }

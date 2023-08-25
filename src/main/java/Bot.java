@@ -1,7 +1,9 @@
+import internal.Constants;
 import internal.Context;
-import listener.GamingRolesListener;
-import listener.MessageListener;
-import listener.NewMemberListener;
+import listeners.CommandListener;
+import listeners.GamingRolesListener;
+import listeners.MessageListener;
+import listeners.NewMemberListener;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -9,17 +11,15 @@ import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
+
+import static internal.Utils.loadProperties;
 
 public class Bot {
 
     public static void main(String[] args) {
         try {
-            InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties");
-            Properties properties = new Properties();
-            properties.load(in);
-            in.close();
+            Properties properties = loadProperties(Constants.CONFIG_PROPERTIES);
 
             Context context = new Context(
                     Integer.parseInt(properties.getProperty("encryptor.pool_size")),
@@ -35,6 +35,7 @@ public class Bot {
             builder.addEventListeners(new MessageListener(context));
             builder.addEventListeners(new GamingRolesListener(context));
             builder.addEventListeners(new NewMemberListener(context));
+            builder.addEventListeners(new CommandListener(context));
             builder.build();
         } catch (IOException e) {
             System.out.println("Property File not found");

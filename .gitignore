@@ -37,6 +37,7 @@ build/
 ### Recources ###
 /src/main/resources/config.properties
 /src/main/resources/context.properties
+/src/main/resources/files/
 
 ### Encryptor Output ###
 /src/main/resources/output.properties
