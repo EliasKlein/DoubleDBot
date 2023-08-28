@@ -24,8 +24,8 @@ this Bot. It really can't do much.
 - Cheer Me Ups - These are properly a little convoluted but bear with me
     - There are 3 kinds: Generic (as many as you like), Special (as many as you like), ultra-rare (only one)
         - All of these are optional, so if you want to use the boring fallback that's ok
-            - The ultra-rare always has a chance to trigger over special and generic (currently with a chance of 420 -
-              very funny I know, I'm here all night)
+        - The ultra-rare always has a chance to trigger over special and generic (currently with a chance of 420 - very
+          funny I know, I'm here all night)
         - If the ultra-rare does not trigger the nickname of the user is checked. If it has a special cheer me up
           assigned, it is triggered.
         - Otherwise, a random cheer me up from the generic pool is chosen.
@@ -48,12 +48,12 @@ this Bot. It really can't do much.
 
 ## To DB or not DB
 
-| **Pro DB**                                                              |     **Con DB**      |
-|:------------------------------------------------------------------------|:-------------------:|
+|                               **Pro DB**                                |     **Con DB**      |
+|:-----------------------------------------------------------------------:|:-------------------:|
 | The Bot does not need to be rebuilt and restarted just to update values | You need a DB setup |
-| Config Files don't contain "production" data                            |          -          |
-| Config files don't explode and get very confusing                       |          -          |
-| Literally what DBs are for                                              |          -          |
+|              Config Files don't contain "production" data               |          -          |
+|            Config files don't explode and get very confusing            |          -          |
+|                       Literally what DBs are for                        |          -          |
 
 Pretty obvious what the best choice is.
 
