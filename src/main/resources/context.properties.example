@@ -16,6 +16,7 @@ channel_id.roles=CHANNEL_ID_FOR_REACTION_ROLE_EMBED
 
 role_id.new=ROLE_ID_FOR_NEW_MEMBERS
 role_id.internal=ROLE_ID_FOR_NORMAL_MEMBERS
+role_id.invisible=ROLE_ID_FOR_PEOPLE_WHO_ARE_ETERNALLY_INVISIBLE
 
 
 ### Game Section ###

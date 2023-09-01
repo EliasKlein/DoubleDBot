@@ -4,6 +4,7 @@ import internal.Context;
 import internal.ExtendedListenerAdapter;
 import internal.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -28,6 +29,9 @@ public class MessageListener extends ExtendedListenerAdapter {
                     actOnNewMemberMessage(event);
                 }
             }
+            if (context.getRoleIds().hasInvisibleRole()) {
+                brandTheInvisible(event);
+            }
         }
     }
 
@@ -37,20 +41,20 @@ public class MessageListener extends ExtendedListenerAdapter {
         TextChannel rolesChannel = guild.getTextChannelById(context.getChannelIds().getRoles());
         if (event.getChannel().equals(rolesChannel)) {
             if (command[0].equals(context.getCommands().getReactionRoles())) {
-                postReactionRoles(context, rolesChannel);
+                postReactionRoles(rolesChannel);
             } else if (command[0].equals(context.getCommands().getUpdateReactionRoles())) {
                 if (command.length != 2) {
                     rolesChannel.sendMessage(
                             String.format("The command '%s' needs the embed ID as an argument", command[0])).queue();
                 } else {
-                    updateReactionRoles(context, rolesChannel, command[1]);
+                    updateReactionRoles(rolesChannel, command[1]);
                 }
             }
         }
     }
 
-    private void postReactionRoles(Context context, TextChannel channel) {
-        EmbedBuilder embedBuilder = getReactionRoleEmbed(context);
+    private void postReactionRoles(TextChannel channel) {
+        EmbedBuilder embedBuilder = getReactionRoleEmbed();
         channel.sendMessageEmbeds(embedBuilder.build()).queue(embed -> {
             String embedId = embed.getId();
             for (Context.GamingRole entry : context.getGamingRoles()) {
@@ -59,8 +63,8 @@ public class MessageListener extends ExtendedListenerAdapter {
         });
     }
 
-    private void updateReactionRoles(Context context, TextChannel channel, String embedId) {
-        EmbedBuilder embedBuilder = getReactionRoleEmbed(context);
+    private void updateReactionRoles(TextChannel channel, String embedId) {
+        EmbedBuilder embedBuilder = getReactionRoleEmbed();
         MessageHistory history = channel.getHistoryBefore(channel.getLatestMessageId(), 100).complete();
         Message reactionRolesEmbed;
         try {
@@ -90,7 +94,7 @@ public class MessageListener extends ExtendedListenerAdapter {
         }
     }
 
-    private EmbedBuilder getReactionRoleEmbed(Context context) {
+    private EmbedBuilder getReactionRoleEmbed() {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setColor(Color.decode(context.getMessages().getEmbedColorHex()));
         embedBuilder.setTitle(context.getMessages().getEmbedText());
@@ -122,6 +126,19 @@ public class MessageListener extends ExtendedListenerAdapter {
                 guild.modifyNickname(author, content).complete();
                 guild.addRoleToMember(author, internalRole).queue();
                 guild.removeRoleFromMember(author, newMemberRole).queue();
+            }
+        }
+    }
+
+    private void brandTheInvisible(MessageReceivedEvent event) {
+        Member member = event.getMember();
+        if (member.getOnlineStatus().equals(OnlineStatus.INVISIBLE) ||
+                member.getOnlineStatus().equals(OnlineStatus.OFFLINE)) {
+            Guild guild = event.getGuild();
+            Role invisibleRole = guild.getRoleById(context.getRoleIds().getInvisible());
+            List<Member> invisibleMembers = guild.getMembersWithRoles(invisibleRole);
+            if (!invisibleMembers.contains(member)) {
+                guild.addRoleToMember(member, invisibleRole).queue();
             }
         }
     }

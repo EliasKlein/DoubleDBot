@@ -12,9 +12,11 @@ this Bot. It really can't do much.
 - Self assign roles via reaction (like basically every Bot)
 - A new member *experience*
 - "Relatively" configurable via property files (within the boundaries planned for the server)
+- Cheer me up command for the darker days
 - (optional) Encryption for all properties
     - This is probably very unnecessary but this is a DRACOON Bot.
-- Cheer me up command for the darker days
+- (optional) Add a role that is automatically assigned to all those filthy eternally invisible people once they write a
+  message
 
 ## Good to know stuff
 

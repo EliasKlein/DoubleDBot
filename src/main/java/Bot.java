@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -26,17 +27,19 @@ public class Bot {
                     System.getenv(properties.getProperty("env.encryption_pw_name")),
                     System.getenv(properties.getProperty("env.encryption_salt_name")));
 
-            JDABuilder builder = JDABuilder.createDefault(System.getenv(properties.getProperty("env.token_name")));
-            builder.setStatus(OnlineStatus.ONLINE);
-            builder.setChunkingFilter(ChunkingFilter.ALL);
-            builder.setMemberCachePolicy(MemberCachePolicy.ALL);
-            builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
-            builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
-            builder.addEventListeners(new MessageListener(context));
-            builder.addEventListeners(new GamingRolesListener(context));
-            builder.addEventListeners(new NewMemberListener(context));
-            builder.addEventListeners(new CommandListener(context));
-            builder.build();
+            JDABuilder.createDefault(System.getenv(properties.getProperty("env.token_name")))
+                    .setStatus(OnlineStatus.ONLINE)
+                    .setMemberCachePolicy(MemberCachePolicy.ALL)
+                    .setChunkingFilter(ChunkingFilter.ALL)
+                    .enableCache(CacheFlag.ONLINE_STATUS)
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS,
+                            GatewayIntent.MESSAGE_CONTENT,
+                            GatewayIntent.GUILD_PRESENCES)
+                    .addEventListeners(new MessageListener(context),
+                            new GamingRolesListener(context),
+                            new NewMemberListener(context),
+                            new CommandListener(context))
+                    .build();
         } catch (IOException e) {
             System.out.println("Property File not found");
         }

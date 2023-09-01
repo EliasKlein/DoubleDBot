@@ -26,7 +26,7 @@ public class Context {
     @Getter
     private final ChannelIds channelIds;
     @Getter
-    private final MemberRoleIds roleIds;
+    private final RoleIds roleIds;
     @Getter
     private final List<GamingRole> gamingRoles;
     @Getter
@@ -119,15 +119,19 @@ public class Context {
         return new ChannelIds(decrypt(channelNew), decrypt(channelRoles));
     }
 
-    private MemberRoleIds initializeMemberRoleIds(Properties properties) {
+    private RoleIds initializeMemberRoleIds(Properties properties) {
         String roleNew = properties.getProperty("role_id.new");
         String roleInternal = properties.getProperty("role_id.internal");
+        String offline = properties.getProperty("role_id.invisible");
 
         if (roleNew == null || roleInternal == null) {
             throw new PropertyNotFoundException("One or more Role ID Properties not found");
         }
 
-        return new MemberRoleIds(decrypt(roleNew), decrypt(roleInternal));
+        return new RoleIds(
+                decrypt(roleNew),
+                decrypt(roleInternal),
+                offline == null ? "" : decrypt(offline));
     }
 
     private List<GamingRole> initializeGamingRoles(Properties properties) {
@@ -168,9 +172,9 @@ public class Context {
             }
 
             list.add(new CheerMeUp(
-                    Constants.CHEER_ME_UP_TYPE.valueOf(type.toUpperCase()),
-                    content,
-                    extra == null ? "" : extra));
+                    Constants.CHEER_ME_UP_TYPE.valueOf(decrypt(type).toUpperCase()),
+                    decrypt(content),
+                    extra == null ? "" : decrypt(extra)));
 
             i++;
         }
@@ -195,9 +199,9 @@ public class Context {
             }
 
             map.put(trigger, new CheerMeUp(
-                    Constants.CHEER_ME_UP_TYPE.valueOf(type.toUpperCase()),
-                    content,
-                    extra == null ? "" : extra));
+                    Constants.CHEER_ME_UP_TYPE.valueOf(decrypt(type).toUpperCase()),
+                    decrypt(content),
+                    extra == null ? "" : decrypt(extra)));
 
             i++;
         }
@@ -216,9 +220,9 @@ public class Context {
             return null;
         }
         return new CheerMeUp(
-                Constants.CHEER_ME_UP_TYPE.valueOf(type.toUpperCase()),
-                content,
-                extra == null ? "" : extra);
+                Constants.CHEER_ME_UP_TYPE.valueOf(decrypt(type).toUpperCase()),
+                decrypt(content),
+                extra == null ? "" : decrypt(extra));
     }
 
     @Getter
@@ -253,9 +257,14 @@ public class Context {
 
     @Getter
     @AllArgsConstructor
-    public class MemberRoleIds {
+    public class RoleIds {
         private final String newMember;
         private final String internalMember;
+        private final String invisible;
+
+        public boolean hasInvisibleRole() {
+            return !invisible.isEmpty();
+        }
     }
 
     @Getter
